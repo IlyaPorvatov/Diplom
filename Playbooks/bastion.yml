@@ -1,0 +1,13 @@
+- hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  remote_user: admin
+
+- name: Copy id_rsa
+  copy:
+    src: /home/admin/.ssh/id_rsa
+    dest: /home/admin/.ssh
+    owner: admin
+    group: admin
+    mode: '0600'
