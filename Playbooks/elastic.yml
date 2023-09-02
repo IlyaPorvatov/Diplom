@@ -1,0 +1,61 @@
+---
+- hosts: elastic
+  become: yes
+  gather_facts: true
+
+  vars:
+    elasticsearch_network_host: "{{ groups['elastic'][0] }}" 
+    elasticsearch_http_port: "9200"
+ 
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: true
+
+    - name: Install dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - gnupg2
+        state: present
+
+    - name: Add Elasticsearch apt key
+      apt_key:
+        url: http://elasticrepo.serveradmin.ru/elastic.asc
+        state: present
+
+    - name: Add Elasticsearch repository [Debian]
+      lineinfile:
+        dest: /etc/apt/sources.list.d/elasticrepo.list
+        line: "deb http://elasticrepo.serveradmin.ru bullseye main"
+        create: yes
+        state: present
+          
+    - name: Update apt cache
+      apt:
+        update_cache: true
+
+    - name: Install Elasticsearch
+      package:
+        name: elasticsearch
+        state: present
+
+    - name: Start Elasticsearch
+      service:
+        name: elasticsearch
+        state: started
+        enabled: true
+
+    - name: Make sure Elasticsearch is running before proceeding.
+      wait_for:
+        host: "{{ elasticsearch_network_host }}"
+        port: "{{ elasticsearch_http_port }}"
+        delay: 3
+        timeout: 300
+
+  handlers:
+    - name: restart elasticsearch
+      service:
+        name: elasticsearch
+        state: restarted
