@@ -27,7 +27,7 @@ galaxy_info:
     - monitoring
     - prometheus
     - exporter
-    - metrics
+    - metricssss
     - system
 
 dependencies: []
