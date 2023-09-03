@@ -1,0 +1,13 @@
+---
+    filebeat.config.modules:
+  enabled: true
+  path: /etc/filebeat/modules.d/*.yml
+
+
+output.elasticsearch:
+  hosts: ["http://10.0.3.12:9200"]
+  username: "elastic"
+  password: "YuL8Kwog3e56O8VxMKli"
+  ssl:
+    enabled: true
+    certificate_authorities: ["/etc/filebeat/http_ca.crt"]
